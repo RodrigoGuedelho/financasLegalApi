@@ -15,7 +15,6 @@ public class GrupoContaService {
 	private GrupoContaRepository grupoContaRepository;
 	
 	public GrupoConta salvar(GrupoConta grupoConta) throws Exception {
-		System.out.println(">>>>" + grupoConta.getDescricao());
 		Exception exception = validarSalvar(grupoConta);
 		if (exception != null)
 			throw exception;

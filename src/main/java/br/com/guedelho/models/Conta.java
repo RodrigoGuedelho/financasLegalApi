@@ -33,6 +33,7 @@ public class Conta {
 	private StatusGenerico status;
 	@Enumerated(EnumType.STRING)
 	private TipoConta tipoConta;
+	
 	public Long getId() {
 		return id;
 	}
