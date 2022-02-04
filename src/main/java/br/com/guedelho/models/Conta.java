@@ -33,6 +33,8 @@ public class Conta {
 	private StatusGenerico status;
 	@Enumerated(EnumType.STRING)
 	private TipoConta tipoConta;
+	@OneToOne
+	private Usuario usuario;
 	
 	public Long getId() {
 		return id;
@@ -81,6 +83,12 @@ public class Conta {
 	}
 	public void setTipoConta(TipoConta tipoConta) {
 		this.tipoConta = tipoConta;
+	}
+	public Usuario getUsuario() {
+		return usuario;
+	}
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 	@Override
 	public int hashCode() {

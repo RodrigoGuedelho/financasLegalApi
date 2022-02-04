@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,29 +31,32 @@ public class GrupoContaController {
 	private ModelMapper modelMapper;
 	
 	@PostMapping("/grupo-contas")
-	public ResponseEntity<Object> salvar(@Valid @RequestBody GrupoContaRequest grupoConta) {
+	public ResponseEntity<Object> salvar(@Valid @RequestBody GrupoContaRequest grupoConta, 
+		@RequestHeader("Authorization") String token) {
 		try {
-			return ResponseEntity.ok(grupoContaService.salvar(toEntity(grupoConta)));
+			return ResponseEntity.ok(grupoContaService.salvar(toEntity(grupoConta), token));
 		} catch (Exception e) {
 			return ResponseEntity.status(400).body(new Problema(400, e.getMessage()));
 		}
 	}
 	
 	@PutMapping("/grupo-contas/{id}")
-	public ResponseEntity<Object> editar(@PathVariable("id") Long id, @Valid @RequestBody GrupoContaRequest grupoConta) {
+	public ResponseEntity<Object> editar(@PathVariable("id") Long id, 
+		@Valid @RequestBody GrupoContaRequest grupoConta, @RequestHeader("Authorization") String token) {
 		try {
 			GrupoConta gruContaAuxiliar = toEntity(grupoConta);
 			gruContaAuxiliar.setId(id);
-			return ResponseEntity.ok(grupoContaService.editar(gruContaAuxiliar));
+			return ResponseEntity.ok(grupoContaService.editar(gruContaAuxiliar, token));
 		} catch (Exception e) {
 			return ResponseEntity.status(400).body(new Problema(400, e.getMessage()));
 		}
 	}
 	
 	@PutMapping("/grupo-contas/{id}/cancelar")
-	public ResponseEntity<Object> cancelar(@PathVariable("id") Long id) {
+	public ResponseEntity<Object> cancelar(@PathVariable("id") Long id, 
+		@RequestHeader("Authorization") String token) {
 		try {
-			return ResponseEntity.ok(grupoContaService.cancelar(id));
+			return ResponseEntity.ok(grupoContaService.cancelar(id, token));
 		} catch (Exception e) {
 			return ResponseEntity.status(400).body(new Problema(400, e.getMessage()));
 		}

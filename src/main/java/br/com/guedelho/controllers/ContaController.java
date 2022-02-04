@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,9 +33,10 @@ public class ContaController {
 	private ModelMapper modelMapper;
 
 	@PostMapping("/contas")
-	public ResponseEntity<Object> salvar(@Valid @RequestBody ContaRequest conta) {
+	public ResponseEntity<Object> salvar(@Valid @RequestBody ContaRequest conta, 
+		@RequestHeader("Authorization") String token) {
 		try {
-			return ResponseEntity.ok(contaService.salvar(toEntity(conta)));
+			return ResponseEntity.ok(contaService.salvar(toEntity(conta), token));
 		} catch (Exception e) {
 			return ResponseEntity.status(400).body(new Problema(400, e.getMessage()));
 		}
@@ -54,20 +56,22 @@ public class ContaController {
 	}
 	
 	@PutMapping("/contas/{id}")
-	public ResponseEntity<Object> editar(@PathVariable("id") Long id, @Valid @RequestBody ContaRequest conta) {
+	public ResponseEntity<Object> editar(@PathVariable("id") Long id, 
+		@Valid @RequestBody ContaRequest conta, @RequestHeader("Authorization") String token) {
 		try {
 			Conta contaAuxiliar = toEntity(conta);
 			contaAuxiliar.setId(id);
-			return ResponseEntity.ok(contaService.editar(contaAuxiliar));
+			return ResponseEntity.ok(contaService.editar(contaAuxiliar, token));
 		} catch (Exception e) {
 			return ResponseEntity.status(400).body(new Problema(400, e.getMessage()));
 		}
 	}
 	
 	@PutMapping("/contas/{id}/cancelar")
-	public ResponseEntity<Object> cancelar(@PathVariable("id") Long id) {
+	public ResponseEntity<Object> cancelar(@PathVariable("id") Long id, 
+		@RequestHeader("Authorization") String token) {
 		try {
-			return ResponseEntity.ok(contaService.cancelar(id));
+			return ResponseEntity.ok(contaService.cancelar(id, token));
 		} catch (Exception e) {
 			return ResponseEntity.status(400).body(new Problema(400, e.getMessage()));
 		}

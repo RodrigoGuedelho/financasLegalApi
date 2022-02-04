@@ -4,7 +4,6 @@ public class Problema {
 	private int status;
 	private String error;
 	
-	
 	public Problema() {
 		super();
 	}

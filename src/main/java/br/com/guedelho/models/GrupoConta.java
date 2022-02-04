@@ -9,10 +9,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.Valid;
-
 import br.com.guedelho.enums.StatusGenerico;
 
 @Entity
@@ -24,11 +23,14 @@ public class GrupoConta {
 	private Long id;
 	@Column(length = 70)
 	private String descricao;
+	@OneToOne
+	private Usuario usuario;
+	
 	@Enumerated(EnumType.STRING)
 	private StatusGenerico status;
 	private OffsetDateTime data; 
 	@Column(name = "ultima_alteracao")
-	private OffsetDateTime ultimaAlteracao; 
+	private OffsetDateTime ultimaAlteracao;
 	
 	public Long getId() {
 		return id;
@@ -60,6 +62,12 @@ public class GrupoConta {
 	}
 	public void setUltimaAlteracao(OffsetDateTime ultimaAlteracao) {
 		this.ultimaAlteracao = ultimaAlteracao;
+	}
+	public Usuario getUsuario() {
+		return usuario;
+	}
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 	@Override
 	public int hashCode() {

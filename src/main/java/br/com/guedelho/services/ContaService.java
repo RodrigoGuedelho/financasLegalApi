@@ -13,6 +13,7 @@ import br.com.guedelho.models.Conta;
 import br.com.guedelho.models.GrupoConta;
 import br.com.guedelho.repository.ContaRepository;
 import br.com.guedelho.repository.GrupoContaRepository;
+import br.com.guedelho.utils.Utils;
 
 @Service
 public class ContaService {
@@ -22,17 +23,19 @@ public class ContaService {
 	@Autowired
 	private GrupoContaRepository grupoContaRepository;
 	
-	public Conta salvar(Conta conta) throws Exception {
+	public Conta salvar(Conta conta, String token) throws Exception {
 		Exception exception = validarSalvar(conta);
 		if (exception != null)
 			throw exception;
 		conta.setData(OffsetDateTime.now());
 		conta.setUltimaAlteracao(OffsetDateTime.now());
 		conta.setStatus(StatusGenerico.ATIVO);
+		conta.setUsuario(Utils.getUsuarioLogado(token));
+		
 		return contaRepository.save(conta);
 	}
 	
-	public Conta editar(Conta conta) throws Exception {
+	public Conta editar(Conta conta, String token) throws Exception {
 		Exception exception = validarEditar(conta);
 		if (exception != null)
 			throw exception;
@@ -42,6 +45,7 @@ public class ContaService {
 		conta.setData(contaAuxiliar.getData());
 		conta.setStatus(StatusGenerico.ATIVO);
 		conta.setUltimaAlteracao(OffsetDateTime.now());
+		conta.setUsuario(Utils.getUsuarioLogado(token));
 		return contaRepository.save(conta);
 	}
 	
@@ -49,7 +53,7 @@ public class ContaService {
 		return contaRepository.find("%" + descricao + "%", id, status, tipoConta);
 	}
 	
-	public Conta cancelar(Long id) throws Exception {
+	public Conta cancelar(Long id, String token) throws Exception {
 		Conta conta = contaRepository.findById(id).get();
 		if (conta == null)
 			throw new Exception("conta invalida.");
@@ -57,6 +61,7 @@ public class ContaService {
 			throw new Exception("conta já está cancelada.");
 		conta.setStatus(StatusGenerico.CANCELADO);
 		conta.setUltimaAlteracao(OffsetDateTime.now());
+		conta.setUsuario(Utils.getUsuarioLogado(token));
 		return contaRepository.save(conta);
 	}
 	
@@ -67,6 +72,8 @@ public class ContaService {
 		GrupoConta grupoConta = grupoContaRepository.findById(conta.getGrupoConta().getId()).get();
 		if (grupoConta == null)
 			return new Exception("Grupo de conta inválido");
+		if (grupoConta.getStatus().equals(StatusGenerico.CANCELADO))
+			return new Exception("Grupo de conta está cancelado e não pode ser usado.");
 		return null;
 	}
 	

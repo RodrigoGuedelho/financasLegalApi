@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import br.com.guedelho.enums.StatusGenerico;
 import br.com.guedelho.models.GrupoConta;
 import br.com.guedelho.repository.GrupoContaRepository;
+import br.com.guedelho.utils.Utils;
 
 @Service
 public class GrupoContaService {
@@ -14,28 +15,30 @@ public class GrupoContaService {
 	@Autowired
 	private GrupoContaRepository grupoContaRepository;
 	
-	public GrupoConta salvar(GrupoConta grupoConta) throws Exception {
+	public GrupoConta salvar(GrupoConta grupoConta, String token) throws Exception {
 		Exception exception = validarSalvar(grupoConta);
 		if (exception != null)
 			throw exception;
 		grupoConta.setData(OffsetDateTime.now());
 		grupoConta.setUltimaAlteracao(OffsetDateTime.now());
 		grupoConta.setStatus(StatusGenerico.ATIVO);
+		grupoConta.setUsuario(Utils.getUsuarioLogado(token));
 		return grupoContaRepository.save(grupoConta);
 	}
 	
-	public GrupoConta editar(GrupoConta grupoConta) throws Exception {
+	public GrupoConta editar(GrupoConta grupoConta, String token) throws Exception {
 		Exception exception = validarEditar(grupoConta);
 		if (exception != null)
 			throw exception;
 		GrupoConta grupoContaAuxiar = grupoContaRepository.findById(grupoConta.getId()).get();
 		grupoContaAuxiar.setDescricao(grupoConta.getDescricao());
 		grupoContaAuxiar.setUltimaAlteracao(OffsetDateTime.now());
+		grupoContaAuxiar.setUsuario(Utils.getUsuarioLogado(token));
 		return grupoContaRepository.save(grupoContaAuxiar);
 	}
 	
 	public Exception validarSalvar(GrupoConta grupoConta) {
-		List<GrupoConta> grupoContaAuxiliar = grupoContaRepository.findByDescricao(grupoConta.getDescricao());
+		List<GrupoConta> grupoContaAuxiliar = grupoContaRepository.findByDescricaoAtivos(grupoConta.getDescricao());
 		
 		if (grupoContaAuxiliar.size() > 0)
 			return new Exception("Descrição já existe.");
@@ -44,7 +47,7 @@ public class GrupoContaService {
 	}
 	
 	public Exception validarEditar(GrupoConta grupoConta) {
-		List<GrupoConta> grupoContaAuxiliar = grupoContaRepository.findByDescricao(grupoConta.getDescricao());
+		List<GrupoConta> grupoContaAuxiliar = grupoContaRepository.findByDescricaoAtivos(grupoConta.getDescricao());
 		
 		if (grupoContaAuxiliar.size() > 0 && grupoContaAuxiliar.get(0).getId() != grupoConta.getId())
 			return new Exception("Descrição já existe.");
@@ -57,7 +60,7 @@ public class GrupoContaService {
 		return grupoContaRepository.find("%" + descricao + "%", id, status);
 	}
 	
-	public GrupoConta cancelar(Long id) throws Exception {
+	public GrupoConta cancelar(Long id, String token) throws Exception {
 		GrupoConta grupoConta = grupoContaRepository.findById(id).get();
 		if (grupoConta == null)
 			throw new Exception("Grupo de conta não existe");
@@ -66,6 +69,7 @@ public class GrupoContaService {
 		
 		grupoConta.setStatus(StatusGenerico.CANCELADO);
 		grupoConta.setUltimaAlteracao(OffsetDateTime.now());
+		grupoConta.setUsuario(Utils.getUsuarioLogado(token));
 		return grupoContaRepository.save(grupoConta);
 	}
 }
