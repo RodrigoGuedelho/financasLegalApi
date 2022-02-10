@@ -1,4 +1,4 @@
-package br.com.guedelho.pedidoCompraApi.security;
+package br.com.guedelho.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

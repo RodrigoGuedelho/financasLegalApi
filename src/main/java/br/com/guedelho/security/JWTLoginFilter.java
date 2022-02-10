@@ -1,4 +1,4 @@
-package br.com.guedelho.pedidoCompraApi.security;
+package br.com.guedelho.security;
 
 import java.io.IOException;
 
