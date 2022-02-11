@@ -67,9 +67,10 @@ public class GrupoContaController {
 	@GetMapping("/grupo-contas")
 	public ResponseEntity<Object> find(@RequestParam(value="id", required = false, defaultValue = "0") Long id,
 			@RequestParam(value="descricao", required = false, defaultValue = "") String descricao, 
-			@RequestParam(value="status", required = false) StatusGenerico status) {
+			@RequestParam(value="status", required = false) StatusGenerico status, 
+			@RequestHeader("Authorization") String token) {
 		try {
-			return ResponseEntity.ok(grupoContaService.find(descricao, id, status));
+			return ResponseEntity.ok(grupoContaService.find(descricao, id, status, token));
 		} catch (Exception e) {
 			return ResponseEntity.status(400).body(new Problema(400, e.getMessage()));
 		}
