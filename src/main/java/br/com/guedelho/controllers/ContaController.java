@@ -47,9 +47,10 @@ public class ContaController {
 			@RequestParam(value="descricao", required = false, defaultValue = "") String descricao, 
 			@RequestParam(value="id", required = false, defaultValue = "0") Long id, 
 			@RequestParam(value="status", required = false) StatusGenerico status, 
-			@RequestParam(value="tipoConta", required = false) TipoConta tipoConta) {
+			@RequestParam(value="tipoConta", required = false) TipoConta tipoConta,
+			@RequestHeader("Authorization") String token) {
 		try {
-			return ResponseEntity.ok(contaService.find(descricao, id, status, tipoConta));
+			return ResponseEntity.ok(contaService.find(descricao, id, status, tipoConta, token));
 		} catch (Exception e) {
 			return ResponseEntity.status(400).body(new Problema(400, e.getMessage()));
 		}
