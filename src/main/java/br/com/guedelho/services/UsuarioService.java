@@ -32,8 +32,8 @@ public class UsuarioService {
 		return usuarioRepository.save(usuario);
 	}
 	
-	public Usuario editar(Usuario usuario, Long id) throws Exception {
-		Exception validaUsuario = validaUsuarioEditar(usuario, id);
+	public Usuario editar(Usuario usuario, Long id, String token) throws Exception {
+		Exception validaUsuario = validaUsuarioEditar(usuario, id, token);
 		
 		if (validaUsuario != null)
 			throw validaUsuario;
@@ -54,9 +54,10 @@ public class UsuarioService {
 		return null;
 	}
 	
-	public Exception validaUsuarioEditar(Usuario usuario, Long id) {
+	public Exception validaUsuarioEditar(Usuario usuario, Long id, String token) {
 		Usuario usuarioExiste = usuarioRepository.findUserByLogin(usuario.getLogin());
 		Usuario usuarioAuxiliar = usuarioRepository.findById(id).get();
+		Usuario usuarioLogado = Utils.getUsuarioLogado(token);
 		if (usuarioAuxiliar == null)
 			return new Exception("Usuário com esse id não existe");
 		if(usuarioExiste != null && !usuarioExiste.getId().equals(id)) {
@@ -65,7 +66,8 @@ public class UsuarioService {
 		if(!usuarioAuxiliar.getStatus().equals(StatusGenerico.ATIVO)) {
 			return new Exception("Usuário Está cancelado");
 		}
-		
+		if (!usuarioLogado.getId().equals(usuarioAuxiliar.getId()) )
+			return new Exception("Usuário não pode editar informações de outro usuário.");
 		return null;
 	}
 	
