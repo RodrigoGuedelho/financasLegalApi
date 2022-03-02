@@ -51,10 +51,12 @@ public class UsuarioController {
 	
 	@PutMapping("/usuarios/{id}")
 	@ResponseStatus(value = HttpStatus.ACCEPTED)
-	public ResponseEntity<Object> editar(@PathVariable Long id, @Valid @RequestBody Usuario usuario)  {
+	public ResponseEntity<Object> editar(
+		@RequestHeader("Authorization") String token,
+		@PathVariable Long id, @Valid @RequestBody Usuario usuario)  {
 		try {
 			try {	
-				usuario = usuarioService.editar(usuario, id);	
+				usuario = usuarioService.editar(usuario, id, token);	
 				return  ResponseEntity.ok(usuario);
 			} catch (Exception e) {
 				Problema problema = new Problema(400, e.getMessage());
@@ -94,7 +96,8 @@ public class UsuarioController {
 	}
 	
 	@PutMapping("/usuarios/cancelar/{id}")
-	public ResponseEntity<Object> cancelar(@PathVariable("id") Long id, @RequestHeader("Authorization") String token) {
+	public ResponseEntity<Object> cancelar(
+		@PathVariable("id") Long id, @RequestHeader("Authorization") String token) {
 		try {	
 			return ResponseEntity.ok(usuarioService.cancelar(id));
 		} catch (Exception e) {
