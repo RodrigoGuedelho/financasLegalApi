@@ -66,7 +66,7 @@ public class UsuarioController {
 		}
 	}
 	
-	@GetMapping("/usuarios")
+	/*@GetMapping("/usuarios")
 	public ResponseEntity<Object> find(
 		@RequestParam(value="login", required = false, defaultValue = "") String login,
 		@RequestParam(value="nome", required = false, defaultValue = "") String nome,
@@ -74,6 +74,18 @@ public class UsuarioController {
 		@RequestParam(value="status", required = false) StatusGenerico status) {
 		try {
 			return ResponseEntity.ok(usuarioService.find(login, nome, id, status));
+		} catch (Exception e) {
+			Problema problema = new Problema(400, e.getMessage());
+			System.out.println("e.getClass()" + e.getClass());
+			return ResponseEntity.status(problema.getStatus()).body(problema);
+		} 
+	}*/
+
+	@GetMapping("/usuarios/logado")
+	public ResponseEntity<Object> find(
+	@RequestHeader("Authorization") String token) {
+		try {
+			return ResponseEntity.ok(usuarioService.findByToken(token));
 		} catch (Exception e) {
 			Problema problema = new Problema(400, e.getMessage());
 			System.out.println("e.getClass()" + e.getClass());

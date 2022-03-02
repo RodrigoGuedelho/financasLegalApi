@@ -19,7 +19,10 @@ public interface UsuarioRepository  extends CrudRepository<Usuario, Long>{
 	@Query("Select u from Usuario u where (u.status = :status or :status is null) "
 			+ "and lower(u.login) like lower(:login) and lower(u.nome) like lower(:nome) "
 			+ "and (u.id = :id or :id = 0)")
-	List<Usuario> find(@Param("login") String login, @Param("nome") String nome, 
+	public List<Usuario> find(@Param("login") String login, @Param("nome") String nome, 
 			@Param("id") Long id, @Param("status") StatusGenerico status);
+
+	@Query("select u from Usuario u where u.login = :login and u.status = 'ATIVO' ")
+	public Usuario findBylogin(@Param("login") String login);
 
 }
