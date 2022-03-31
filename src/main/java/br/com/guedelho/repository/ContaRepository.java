@@ -11,7 +11,8 @@ import br.com.guedelho.enums.TipoConta;
 import br.com.guedelho.models.Conta;
 
 public interface ContaRepository extends JpaRepository<Conta, Long>{
-	@Query("select c from Conta c where c.descricao like :descricao and (c.id = :id or :id = 0) "
+	@Query("select c from Conta c where lower(c.descricao) like lower(:descricao) "
+			+ "and (c.id = :id or :id = 0) "
 			+ "and (c.status = :status or :status is null ) "
 			+ "and (c.tipoConta = :tipoConta or :tipoConta is null) " 
 			+ "and c.usuario.id = :usuarioId")
