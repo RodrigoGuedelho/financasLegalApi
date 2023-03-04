@@ -1,0 +1,12 @@
+version: '3.3'
+services:
+  financeiro-legal:
+    image: openjdk
+    container_name: financeiro-legal
+    network_mode: "host"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: always
