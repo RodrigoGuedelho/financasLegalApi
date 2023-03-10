@@ -1,6 +1,7 @@
 package br.com.guedelho.services;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -25,11 +26,11 @@ public class ContaService {
 	private GrupoContaRepository grupoContaRepository;
 	
 	public Conta salvar(Conta conta, String token) throws Exception {
+		conta.setId(null);
 		Usuario usuario = Utils.getUsuarioLogado(token);
 		Exception exception = validarSalvar(conta, usuario);
 		if (exception != null)
 			throw exception;
-		conta.setData(OffsetDateTime.now());
 		conta.setUltimaAlteracao(OffsetDateTime.now());
 		conta.setStatus(StatusGenerico.ATIVO);
 		conta.setUsuario(usuario);
@@ -44,18 +45,22 @@ public class ContaService {
 			throw exception;
 		
 		Conta contaAuxiliar = contaRepository.findById(conta.getId()).get();
-		
-		conta.setData(contaAuxiliar.getData());
+
 		conta.setStatus(StatusGenerico.ATIVO);
 		conta.setUltimaAlteracao(OffsetDateTime.now());
 		conta.setUsuario(usuario);
 		return contaRepository.save(conta);
 	}
 	
-	public List<Conta> find(String descricao, Long id, StatusGenerico status, TipoConta tipoConta, 
+	public List<Conta> find(LocalDate dataInicio, LocalDate dataFim, String descricao, Long id, StatusGenerico status, TipoConta tipoConta, 
 		String token){
-		return contaRepository.find("%" + descricao + "%", id, status, tipoConta, 
+		return contaRepository.find(dataInicio.toString(), dataFim.toString(), "%" + descricao + "%", id, status, tipoConta, 
 			Utils.getUsuarioLogado(token).getId());
+	}
+
+	public Conta findById(Long id) {
+		Conta conta = contaRepository.findById(id).get();		
+		return conta != null ? conta : null;
 	}
 	
 	public Conta cancelar(Long id, String token) throws Exception {

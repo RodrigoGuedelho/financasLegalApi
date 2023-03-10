@@ -1,6 +1,7 @@
 package br.com.guedelho.models;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 import javax.persistence.Column;
@@ -24,7 +25,7 @@ public class Conta {
 	private Long id;
 	private String descricao;
 	private BigDecimal valor;
-	private OffsetDateTime data; 
+	private LocalDate data;
 	@Column(name = "ultima_alteracao")
 	private OffsetDateTime ultimaAlteracao; 
 	@OneToOne
@@ -54,10 +55,10 @@ public class Conta {
 	public void setValor(BigDecimal valor) {
 		this.valor = valor;
 	}
-	public OffsetDateTime getData() {
+	public LocalDate getData() {
 		return data;
 	}
-	public void setData(OffsetDateTime data) {
+	public void setData(LocalDate data) {
 		this.data = data;
 	}
 	public OffsetDateTime getUltimaAlteracao() {

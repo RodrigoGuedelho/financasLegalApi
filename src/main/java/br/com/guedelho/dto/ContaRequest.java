@@ -1,6 +1,7 @@
 package br.com.guedelho.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -16,6 +17,7 @@ public class ContaRequest {
 	private Long grupoContaId;
 	@NotNull
 	private TipoConta tipoConta;
+	private LocalDate data;
 	
 	public String getDescricao() {
 		return descricao;
@@ -40,5 +42,12 @@ public class ContaRequest {
 	}
 	public void setTipoConta(TipoConta tipoConta) {
 		this.tipoConta = tipoConta;
+	}
+	public LocalDate getData() {
+		return data;
+	}
+
+	public void setData(LocalDate data) {
+		this.data = data;
 	}
 }
